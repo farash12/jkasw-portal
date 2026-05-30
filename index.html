@@ -18,10 +18,35 @@
   </style>
 </head>
 <body>
-  <iframe src="https://script.google.com/macros/s/AKfycbxWw9wz51FFkqC9D0Im1GKt1i3XkqayhyTYFp1EyzZWxECHgzDRAAlJA5gzwmVIuGi9-g/exec"
+  <iframe id="appFrame"
     allow="camera; microphone; geolocation; clipboard-write">
   </iframe>
   <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3S-37IgQPT1E61YJW4fXTLzBn-03WFWj6mk1m85alf5tvenKAKuMc5hnEwT0xtLl5kg/exec";
+
+    // Load saved credentials
+    var email = localStorage.getItem('jkasw_email');
+    var pass  = localStorage.getItem('jkasw_pass');
+
+    // Load app with or without credentials
+    if(email && pass){
+      document.getElementById('appFrame').src = SCRIPT_URL + "?email=" + encodeURIComponent(email) + "&pass=" + encodeURIComponent(pass);
+    } else {
+      document.getElementById('appFrame').src = SCRIPT_URL;
+    }
+
+    // Listen for save/clear credentials messages from the iframe
+    window.addEventListener('message', function(e){
+      if(e.data && e.data.type === 'SAVE_LOGIN'){
+        localStorage.setItem('jkasw_email', e.data.email);
+        localStorage.setItem('jkasw_pass',  e.data.pass);
+      }
+      if(e.data && e.data.type === 'CLEAR_LOGIN'){
+        localStorage.removeItem('jkasw_email');
+        localStorage.removeItem('jkasw_pass');
+      }
+    });
+
     if('serviceWorker' in navigator){
       navigator.serviceWorker.register('sw.js');
     }
