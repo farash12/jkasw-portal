@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b2045">
+  <link rel="manifest" href="manifest.json">
+  <title>JKASW Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0b2045; }
+    iframe {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe src="https://script.google.com/macros/s/AKfycbxWw9wz51FFkqC9D0Im1GKt1i3XkqayhyTYFp1EyzZWxECHgzDRAAlJA5gzwmVIuGi9-g/exec"
+    allow="camera; microphone; geolocation; clipboard-write">
+  </iframe>
+  <script>
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
