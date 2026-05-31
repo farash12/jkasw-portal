@@ -49,6 +49,17 @@
     if('serviceWorker' in navigator){
       navigator.serviceWorker.register('sw.js');
     }
+
+    <script>
+  const SCRIPT_URL = "...";
+  
+  var email = localStorage.getItem('jkasw_email');
+  var pass  = localStorage.getItem('jkasw_pass');
+  
+  alert('email: ' + email + ' pass: ' + pass); // ← ADD THIS
+  
+  if(email && pass){
   </script>
+  
 </body>
 </html>
