@@ -23,17 +23,18 @@
   </iframe>
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2EXiaxlytR8j3wAJ46m9iYwqyy43apFIEKn929snlfR4OjFBBvYUx4HFeuNBg1i_0hg/exec";
-
+    
     var email = localStorage.getItem('jkasw_email');
     var pass  = localStorage.getItem('jkasw_pass');
-
+    
+    alert('email: ' + email + ' pass: ' + pass);
+    
     if(email && pass){
       document.getElementById('appFrame').src = SCRIPT_URL + '?email=' + encodeURIComponent(email) + '&pass=' + encodeURIComponent(pass);
     } else {
       document.getElementById('appFrame').src = SCRIPT_URL;
     }
 
-    // Listen for messages from iframe
     window.addEventListener('message', function(e){
       if(!e.data || !e.data.type) return;
       if(e.data.type === 'SAVE_LOGIN'){
@@ -49,17 +50,6 @@
     if('serviceWorker' in navigator){
       navigator.serviceWorker.register('sw.js');
     }
-
-    <script>
-  const SCRIPT_URL = "...";
-  
-  var email = localStorage.getItem('jkasw_email');
-  var pass  = localStorage.getItem('jkasw_pass');
-  
-  alert('email: ' + email + ' pass: ' + pass); // ← ADD THIS
-  
-  if(email && pass){
   </script>
-  
 </body>
 </html>
