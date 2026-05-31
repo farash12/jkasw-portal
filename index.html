@@ -22,26 +22,25 @@
     allow="camera; microphone; geolocation; clipboard-write">
   </iframe>
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2EXiaxlytR8j3wAJ46m9iYwqyy43apFIEKn929snlfR4OjFBBvYUx4HFeuNBg1i_0hg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxrDVr0R-ac-pzCwJQVICxtBEMWuzt4EqCQfybfGxJ9C8AiWKX_TL66cZTpy2MizTC9fQ/exec";
 
-    // Load saved credentials
     var email = localStorage.getItem('jkasw_email');
     var pass  = localStorage.getItem('jkasw_pass');
 
-    // Load app with or without credentials
     if(email && pass){
-      document.getElementById('appFrame').src = SCRIPT_URL + "?email=" + encodeURIComponent(email) + "&pass=" + encodeURIComponent(pass);
+      document.getElementById('appFrame').src = SCRIPT_URL + '?email=' + encodeURIComponent(email) + '&pass=' + encodeURIComponent(pass);
     } else {
       document.getElementById('appFrame').src = SCRIPT_URL;
     }
 
-    // Listen for save/clear credentials messages from the iframe
+    // Listen for messages from iframe
     window.addEventListener('message', function(e){
-      if(e.data && e.data.type === 'SAVE_LOGIN'){
+      if(!e.data || !e.data.type) return;
+      if(e.data.type === 'SAVE_LOGIN'){
         localStorage.setItem('jkasw_email', e.data.email);
         localStorage.setItem('jkasw_pass',  e.data.pass);
       }
-      if(e.data && e.data.type === 'CLEAR_LOGIN'){
+      if(e.data.type === 'CLEAR_LOGIN'){
         localStorage.removeItem('jkasw_email');
         localStorage.removeItem('jkasw_pass');
       }
