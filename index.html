@@ -8,44 +8,30 @@
   <title>JKASW Portal</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0b2045; }
-    iframe {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: none;
+    body { 
+      background: #0b2045; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: sans-serif;
+      color: white;
     }
   </style>
 </head>
 <body>
-  <iframe id="appFrame"
-    allow="camera; microphone; geolocation; clipboard-write">
-  </iframe>
+  <p>Loading...</p>
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2EXiaxlytR8j3wAJ46m9iYwqyy43apFIEKn929snlfR4OjFBBvYUx4HFeuNBg1i_0hg/exec";
     
     var email = localStorage.getItem('jkasw_email');
     var pass  = localStorage.getItem('jkasw_pass');
     
-    alert('email: ' + email + ' pass: ' + pass);
-    
     if(email && pass){
-      document.getElementById('appFrame').src = SCRIPT_URL + '?email=' + encodeURIComponent(email) + '&pass=' + encodeURIComponent(pass);
+      window.location.href = SCRIPT_URL + '?email=' + encodeURIComponent(email) + '&pass=' + encodeURIComponent(pass);
     } else {
-      document.getElementById('appFrame').src = SCRIPT_URL;
+      window.location.href = SCRIPT_URL;
     }
-
-    window.addEventListener('message', function(e){
-      if(!e.data || !e.data.type) return;
-      if(e.data.type === 'SAVE_LOGIN'){
-        localStorage.setItem('jkasw_email', e.data.email);
-        localStorage.setItem('jkasw_pass',  e.data.pass);
-      }
-      if(e.data.type === 'CLEAR_LOGIN'){
-        localStorage.removeItem('jkasw_email');
-        localStorage.removeItem('jkasw_pass');
-      }
-    });
 
     if('serviceWorker' in navigator){
       navigator.serviceWorker.register('sw.js');
