@@ -1,6 +1,6 @@
 {
   "name": "JKASW Portal",
-  "short_name": "JKASW",
+  "short_name": "JKASW Leaves",
   "description": "JKASW Leaves Management Portal",
   "start_url": "/jkasw-portal/",
   "display": "standalone",
