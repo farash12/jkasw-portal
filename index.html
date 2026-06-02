@@ -1,41 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b2045">
-  <link rel="manifest" href="manifest.json">
-  <title>JKASW Portal</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      background: #0b2045; 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      font-family: sans-serif;
-      color: white;
-    }
-  </style>
-</head>
-<body>
-  <p>Loading...</p>
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpRGziQWK1FelgoK6CFn-_fCuZG8APwG1X63QhRvAOt9dVKOwsj9z0_76Calh7XCRJSQ/exec";
-    
-    var email = localStorage.getItem('jkasw_email');
-    var pass  = localStorage.getItem('jkasw_pass');
-    
-    if(email && pass){
-      window.location.href = SCRIPT_URL + '?email=' + encodeURIComponent(email) + '&pass=' + encodeURIComponent(pass);
-    } else {
-      window.location.href = SCRIPT_URL;
-    }
-
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('sw.js');
-    }
-  </script>
-</body>
-</html>
+function doLogin(){
+  var btn=document.getElementById('loginBtn');
+  var email=document.getElementById('email').value.trim();
+  var pass=document.getElementById('pass').value.trim();
+  hideAlert('loginAlert');
+  if(!email||!pass){
+    showAlert('loginAlert','loginAlertTxt','Please enter both email and password.','error');
+    return;
+  }
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Signing in…';
+  setLoading(true,'Verifying credentials…');
+  google.script.run
+    .withSuccessHandler(function(res){
+      setLoading(false);
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
+      if(res && res.success){
+        if(document.getElementById('rememberMe').checked){
+          window.parent.postMessage({type:'SAVE_LOGIN', email:email, pass:pass}, '*');
+        } else {
+          window.parent.postMessage({type:'CLEAR_LOGIN'}, '*');
+        }
+        document.getElementById('sName').value = res.fullName || '';
+        document.getElementById('sEmail').value = res.email || '';
+        document.getElementById('sProject').value = res.project || '';
+        document.getElementById('sDesignation').value = res.designation || '';
+        document.getElementById('sLocation').value = res.location || '';
+        document.getElementById('sJoining').value = res.joiningDate || '';
+        document.getElementById('sPhoto').value = res.photo || '';
+        document.getElementById('loginPanel').classList.add('hidden');
+        if(res.isHR){
+          document.getElementById('hrUserTag').textContent = res.fullName || 'HR Admin';
+          document.getElementById('hrDashboard').classList.remove('hidden');
+          loadPendingRequests();
+        } else {
+          document.getElementById('staffDashboard').classList.remove('hidden');
+          loadMyRequestsSilent(document.getElementById('sEmail').value||res.email||'');
+          var el;
+          el = document.getElementById('profileName');
+          if(el) el.textContent = res.fullName || '';
+          el = document.getElementById('profileProject');
+          if(el) el.textContent = res.project || '';
+          el = document.getElementById('profileLocation');
+          if(el) el.textContent = res.location || '';
+          el = document.getElementById('profileDesignation');
+          if(el) el.textContent = res.designation || '';
+          el = document.getElementById('profileJoining');
+          if(el) el.textContent = res.joiningDate || '';
+          el = document.getElementById('profilePhoto');
+          if(el){
+            el.src = res.photo 
+              ? res.photo 
+              : "https://ui-avatars.com/api/?name=" + encodeURIComponent(res.fullName || 'User');
+          }
+          switchStaffView('menu');
+        }
+        toast('Welcome back!',res.fullName||'','t-ok');
+      } else {
+        showAlert('loginAlert','loginAlertTxt',(res&&res.error)||'Login failed.','error');
+      }
+    })
+    .withFailureHandler(function(err){
+      setLoading(false);
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
+      showAlert('loginAlert','loginAlertTxt','Connection error: '+err,'error');
+    })
+    .handleLogin(email,pass);
+}
