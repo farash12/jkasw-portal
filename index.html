@@ -9,7 +9,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0b2045; }
-
     #splash {
       position: fixed;
       inset: 0;
@@ -20,7 +19,6 @@
       justify-content: center;
       z-index: 999;
     }
-
     #splash img {
       width: 120px;
       height: 120px;
@@ -28,14 +26,12 @@
       margin-bottom: 24px;
       border-radius: 16px;
     }
-
     #splash .welcome {
       color: #f5a623;
       font-family: sans-serif;
       font-size: 15px;
       margin-bottom: 6px;
     }
-
     #splash .title {
       color: #ffffff;
       font-family: sans-serif;
@@ -43,13 +39,11 @@
       font-weight: 800;
       margin-bottom: 6px;
     }
-
     #splash .subtitle {
       color: #f5a623;
       font-family: sans-serif;
       font-size: 13px;
     }
-
     #splash .credit {
       position: absolute;
       bottom: 24px;
@@ -57,7 +51,6 @@
       font-family: sans-serif;
       font-size: 11px;
     }
-
     iframe {
       position: fixed;
       top: 0; left: 0;
@@ -66,12 +59,10 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-
     iframe.loaded { opacity: 1; }
   </style>
 </head>
 <body>
-
   <div id="splash">
     <img src="https://drive.google.com/thumbnail?id=1wY39imvIBRTdqvVhl19tR-CwukB7RJ2j" alt="JKASW Logo">
     <div class="welcome">Welcome to</div>
@@ -79,44 +70,41 @@
     <div class="subtitle">Leaves Management Portal</div>
     <div class="credit">Developed by K-eStudio</div>
   </div>
-
   <iframe id="appFrame"
     allow="camera; microphone; geolocation; clipboard-write">
   </iframe>
-
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqZbhoXUxOkOXLyPMe25BlhCP5L2REgSKueEUWw58RbwcQ-DtqUsgdlRb675b7zU8Vuw/exec",
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqZbhoXUxOkOXLyPMe25BlhCP5L2REgSKueEUWw58RbwcQ-DtqUsgdlRb675b7zU8Vuw/exec";
 
     var email = localStorage.getItem('jkasw_email');
     var pass  = localStorage.getItem('jkasw_pass');
-
     var frame = document.getElementById('appFrame');
 
-    if(email && pass){
+    if (email && pass) {
       frame.src = SCRIPT_URL + '?email=' + encodeURIComponent(email) + '&pass=' + encodeURIComponent(pass);
     } else {
       frame.src = SCRIPT_URL;
     }
 
     // Hide splash after 2.5 seconds
-    setTimeout(function(){
+    setTimeout(function () {
       document.getElementById('splash').style.display = 'none';
       frame.classList.add('loaded');
     }, 2500);
 
-    window.addEventListener('message', function(e){
-      if(!e.data || !e.data.type) return;
-      if(e.data.type === 'SAVE_LOGIN'){
+    window.addEventListener('message', function (e) {
+      if (!e.data || !e.data.type) return;
+      if (e.data.type === 'SAVE_LOGIN') {
         localStorage.setItem('jkasw_email', e.data.email);
-        localStorage.setItem('jkasw_pass',  e.data.pass);
+        localStorage.setItem('jkasw_pass', e.data.pass);
       }
-      if(e.data.type === 'CLEAR_LOGIN'){
+      if (e.data.type === 'CLEAR_LOGIN') {
         localStorage.removeItem('jkasw_email');
         localStorage.removeItem('jkasw_pass');
       }
     });
 
-    if('serviceWorker' in navigator){
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
   </script>
